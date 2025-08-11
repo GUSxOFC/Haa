@@ -1,1 +1,173 @@
-<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Chat Bot Otomatis - by GusOfcXD</title><style>*{box-sizing:border-box}body{margin:0;padding:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:#fff;animation:bgAnim 10s infinite alternate}@keyframes bgAnim{0%{background-position:0% 50%}100%{background-position:100% 50%}}header{background:#ff0055;padding:1.5rem;text-align:center;font-size:1.8rem;font-weight:bold;box-shadow:0 0 15px #ff0055}main{padding:2rem;max-width:600px;margin:auto;background:rgba(0,0,0,0.6);border-radius:20px;box-shadow:0 0 20px #00f2ff}.form-group{margin-bottom:1rem}label{display:block;margin-bottom:5px;font-weight:bold}input,textarea{width:100%;padding:0.7rem;border-radius:8px;border:none;font-size:1rem;background:#121212;color:#fff;box-shadow:inset 0 0 10px #00e0ff44}button{background:#00f2ff;color:black;font-weight:bold;padding:0.7rem 1.2rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 0 15px #00f2ff;transition:0.3s}button:hover{background:#0ff;transform:scale(1.05)}#chat{margin-top:1.5rem;background:#101010;padding:1rem;border-radius:10px;max-height:300px;overflow-y:auto;box-shadow:0 0 10px #00f2ff55}.message{margin:0.5rem 0;background:#1f1f1f;padding:0.5rem 1rem;border-left:3px solid #00f2ff}.switch{position:relative;display:inline-block;width:50px;height:28px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;cursor:pointer;background-color:#ccc;border-radius:34px;top:0;left:0;right:0;bottom:0;transition:.4s}.slider:before{position:absolute;content:"";height:22px;width:22px;left:3px;bottom:3px;background-color:white;border-radius:50%;transition:.4s}input:checked+.slider{background-color:#00f2ff;box-shadow:0 0 10px #00f2ff}input:checked+.slider:before{transform:translateX(22px)}.wa-button{display:inline-block;background-color:#25D366;color:white;font-weight:bold;padding:0.7rem 1.5rem;border-radius:8px;text-decoration:none;box-shadow:0 0 10px #25D366;transition:0.3s;font-size:1rem}.wa-button:hover{background-color:#1ebd5a;box-shadow:0 0 20px #25D366,0 0 40px #25D366;transform:scale(1.05)}footer{margin-top:2rem;text-align:center;font-size:0.9rem;color:#aaa}.tutorial{margin-top:2rem;font-size:0.95rem;background:#222;padding:1rem;border-radius:10px;box-shadow:0 0 10px #fff2}</style></head><body><header>🤖 Chat Bot Otomatis by GusOfcXD</header><main><div class="form-group"><label>ID Penerima</label><input type="text" id="chat_id" placeholder="Contoh: 123456789"/></div><div class="form-group"><label>Pesan</label><textarea id="message" rows="3" placeholder="Tulis pesan kamu di sini..."></textarea></div><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><button onclick="sendMessage()">Kirim Pesan</button><label class="switch"><input type="checkbox" onchange="toggleAutoCheck(this)"><span class="slider"></span></label><span style="font-size:0.9rem;">Cek Balasan Otomatis</span></div><div class="form-group"><button onclick="mintaPassword()">🧹 Bersihkan Chat (Owner)</button></div><div id="chat"></div><div class="tutorial"><h3>📘 Tutorial</h3><ul><li>Masukkan ID Telegram penerima.</li><li>Tulis pesan dan kirim via bot.</li><li>Balasan dari penerima akan muncul di sini.</li><li>Jika user membalas ulang, pesan lama akan terhapus otomatis.</li><li>Bersihkan semua chat hanya bisa oleh owner dengan password.</li></ul></div><div style="text-align:center;margin-top:1rem;"><a href="https://wa.me/6285845768017" target="_blank" class="wa-button">💬 Hubungi Owner (GusOfcXD)</a></div></main><footer>Made with ❤️ by GusOfcXD - 2025</footer><script>const token="7730776542:AAGE72nRJr4a6W8YgCYX5DfDqoHgX5y8aZo",chatBox=document.getElementById("chat");let autoCheckInterval=null,pesanTerkirim={};function sendMessage(){const t=document.getElementById("chat_id").value.trim(),e=document.getElementById("message").value.trim();if(!t||!e)return void alert("⚠️ Isi ID dan pesan dulu!");fetch(`https://api.telegram.org/bot${token}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:t,text:e})}).then(t=>t.json()).then(n=>{n.ok?(tambahPesan("✅ Kamu",e),pesanTerkirim[t]=e,document.getElementById("message").value=""):alert("❌ Gagal: "+n.description)}).catch(t=>alert("❌ Error: "+t.message))}function tambahPesan(t,e,n=null){const a=document.createElement("div");a.className="message",n&&(a.dataset.from=n),a.innerText=`${t}: ${e}`,chatBox.appendChild(a),chatBox.scrollTop=chatBox.scrollHeight}function cekBalasan(){fetch(`https://api.telegram.org/bot${token}/getUpdates`).then(t=>t.json()).then(t=>{t.ok&&t.result.forEach(t=>{if(t.message&&t.message.text){const e=t.message.from.id,n=t.message.text;document.querySelectorAll(".message").forEach(t=>{t.dataset.from===String(e)&&t.remove()}),tambahPesan(`📩 Dari ${e}`,n,e),delete pesanTerkirim[e]}})}).catch(t=>alert("❌ Error ambil balasan: "+t.message))}function toggleAutoCheck(t){t.checked?autoCheckInterval=setInterval(cekBalasan,5e3):clearInterval(autoCheckInterval)}function mintaPassword(){"aguslapar"===prompt("Masukkan password owner:")?(document.getElementById("chat").innerHTML="",alert("✅ Chat berhasil dibersihkan.")):alert("❌ Password salah!")}</script></body></html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maukah Kamu Jadi Pacarku?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://i.imgur.com/your_ai_image.jpg'); /* Ganti dengan URL gambar AI */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #e91e63; /* Pink lebih tua */
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            transition: opacity 0.5s;
+            background-color: rgba(252, 228, 236, 0.8); /* Pink lembut semi-transparan */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #e91e63;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #c2185b;
+            transform: scale(1.1);
+        }
+
+        #noButton {
+            position: absolute;
+        }
+
+        .flower {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
+            animation: floatFlower 5s linear infinite;
+        }
+
+        @keyframes floatFlower {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Apakah kamu mau jadi pacarku?</h1>
+        <button id="yesButton">Mau</button>
+        <button id="noButton">Gak</button>
+    </div>
+
+    <div id="secondQuestion" class="container hidden">
+        <h2>Sekarang kita panggil apa?</h2>
+        <button id="sayangButton">Sayang</button>
+        <button id="kontolButton">Kontol</button>
+    </div>
+
+    <div id="result" class="container hidden fade-in"></div>
+
+    <script>
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const secondQuestion = document.getElementById('secondQuestion');
+        const result = document.getElementById('result');
+        const sayangButton = document.getElementById('sayangButton');
+        const kontolButton = document.getElementById('kontolButton');
+
+        yesButton.addEventListener('click', () => {
+            result.innerHTML = '<h2>Selamat anda jadi pacar ku🥰😘</h2>';
+            result.classList.remove('hidden');
+            document.querySelector('.container').classList.add('hidden');
+            setTimeout(() => {
+                result.classList.add('hidden');
+                secondQuestion.classList.remove('hidden');
+            }, 2000);
+        });
+
+        noButton.addEventListener('click', () => {
+            noButton.style.position = 'absolute';
+            setInterval(() => {
+                const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
+                const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+                noButton.style.left = `${x}px`;
+                noButton.style.top = `${y}px`;
+            }, 500);
+        });
+
+        sayangButton.addEventListener('click', () => {
+            result.innerHTML = '<h2>Okee kamu sah jadi calon istri ku😘🥰</h2>';
+            result.classList.remove('hidden');
+            secondQuestion.classList.add('hidden');
+            setTimeout(() => {
+                result.innerHTML = '<h2>Oke terimakasih kita akan nikah besok</h2>';
+            }, 2000);
+        });
+
+        kontolButton.addEventListener('click', () => {
+            result.innerHTML = '<h2>Kita putus,🥹</h2>';
+            result.classList.remove('hidden');
+            secondQuestion.classList.add('hidden');
+        });
+
+        // Fungsi untuk membuat bunga-bunga
+        function createFlower() {
+            const flower = document.createElement('img');
+            flower.src = 'https://i.imgur.com/wQFCy4H.png'; // Ganti dengan URL gambar bunga yang kamu suka
+            flower.classList.add('flower');
+            flower.style.left = Math.random() * window.innerWidth + 'px';
+            flower.style.animationDuration = Math.random() * 3 + 2 + 's'; // Durasi animasi acak
+            document.body.appendChild(flower);
+
+            // Hilangkan bunga setelah animasi selesai
+            flower.addEventListener('animationend', () => {
+                flower.remove();
+            });
+        }
+
+        // Buat bunga setiap 0.5 detik
+        setInterval(createFlower, 500);
+    </script>
+</body>
+</html>
