@@ -1,384 +1,156 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Surat Undangan — GusOfcXD</title>
-<style>
-  :root{
-    --bg:#f6f4ff;
-    --card:#ffffff;
-    --ink:#2b2d42;
-    --accent:#6c5ce7;
-    --accent2:#ff6b6b;
-    --gold:#f4c430;
-    --shadow:0 10px 25px rgba(0,0,0,.12);
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", sans-serif;
-    color:var(--ink);
-    background:
-      radial-gradient(1200px 600px at 10% -10%, #ffd9e6 0%, transparent 60%),
-      radial-gradient(1200px 600px at 110% 10%, #d9e8ff 0%, transparent 60%),
-      radial-gradient(1200px 600px at 50% 110%, #e9ffd9 0%, transparent 60%),
-      var(--bg);
-    min-height:100svh;
-    display:grid;
-    place-items:center;
-    padding:24px;
-  }
-  .wrap{
-    width:min(780px, 92vw);
-    text-align:center;
-  }
-  .headline{
-    font-size:clamp(18px, 3vw, 22px);
-    letter-spacing:.4px;
-    margin:0 0 16px;
-    opacity:.9;
-  }
-  .headline strong{color:var(--accent)}
-  .ribbon{
-    display:inline-block;
-    padding:8px 14px;
-    background:linear-gradient(135deg, var(--accent), #a16eff);
-    color:#fff;border-radius:999px;
-    box-shadow:var(--shadow);
-    font-weight:700; letter-spacing:.5px;
-    margin-bottom:22px;
-  }
-  /* Envelope/Invitation Card */
-  .invite{
-    position:relative;
-    width:min(560px, 88vw);
-    height:340px;
-    margin:0 auto 18px;
-    perspective:1200px;
-    cursor:pointer;
-    user-select:none;
-  }
-  .card{
-    position:absolute; inset:0;
-    background:linear-gradient(180deg, #fff, #faf7ff 70%);
-    border-radius:24px;
-    box-shadow:var(--shadow);
-    overflow:hidden;
-    transform-style:preserve-3d;
-    transition:transform .9s cubic-bezier(.2,.8,.2,1);
-  }
-  .card:hover{transform:rotateX(7deg) rotateY(-6deg)}
-  .flap{
-    position:absolute; left:0; right:0; top:0; height:55%;
-    background:linear-gradient(180deg, #fef6ff, #ffeef9);
-    clip-path:polygon(0 0, 100% 0, 50% 100%);
-    transform-origin:50% 0%;
-    transition:transform .9s cubic-bezier(.2,.8,.2,1);
-    z-index:3;
-  }
-  .seal{
-    position:absolute; left:50%; top:46%;
-    transform:translate(-50%,-50%);
-    width:78px; height:78px; border-radius:50%;
-    background:radial-gradient(circle at 30% 30%, #ffdede, #ff7a7a);
-    box-shadow:0 6px 16px rgba(255, 75, 75, .35), inset 0 4px 12px rgba(255,255,255,.6);
-    display:grid; place-items:center;
-    color:#fff; font-weight:800; letter-spacing:.8px;
-    z-index:4;
-  }
-  .seal::after{
-    content:"★";
-    font-size:28px;
-    filter:drop-shadow(0 2px 0 rgba(0,0,0,.15));
-  }
-  .content{
-    position:absolute; inset:0; padding:28px 28px 34px;
-    display:grid; place-items:center; gap:12px;
-  }
-  .title{
-    font-size:clamp(22px, 4.2vw, 30px);
-    font-weight:800; margin:0;
-    letter-spacing:.6px;
-  }
-  .subtitle{
-    margin:0; opacity:.8;
-    font-size:clamp(14px, 2.6vw, 16px);
-  }
-  .ornaments{
-    position:absolute; inset:0; pointer-events:none;
-  }
-  .dot{
-    position:absolute; width:8px; height:8px; border-radius:50%;
-    background:var(--gold); box-shadow:0 0 0 6px rgba(244,196,48,.12);
-    animation:float 6s ease-in-out infinite;
-  }
-  .dot.d1{left:18px; top:18px}
-  .dot.d2{right:22px; top:28px; animation-delay:1s}
-  .dot.d3{left:26px; bottom:24px; animation-delay:2s}
-  .dot.d4{right:28px; bottom:20px; animation-delay:3s}
-  @keyframes float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-  .hint{
-    display:block; margin-top:8px; font-size:12px; opacity:.7;
-  }
+  <meta charset="UTF-8">
+  <title>Brat Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: url('https://h.uguu.se/lMtLExSE.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
 
-  /* Modal Letter */
-  dialog{
-    width:min(720px, 94vw);
-    border:none; border-radius:24px;
-    padding:0; overflow:hidden;
-    box-shadow:var(--shadow);
-    backdrop-filter:saturate(120%) blur(8px);
-  }
-  dialog::backdrop{
-    background:rgba(0,0,0,.3);
-    backdrop-filter:blur(2px);
-  }
-  .paper{
-    background:
-      radial-gradient(600px 180px at 50% 0%, #fff 0%, #fdf7ff 70%, transparent 100%),
-      repeating-linear-gradient(transparent, transparent 28px, rgba(108,92,231,.08) 28px, rgba(108,92,231,.08) 30px),
-      #fff;
-    padding:28px;
-  }
-  .paper-inner{
-    background:#fff; border:1px solid rgba(0,0,0,.06);
-    border-radius:16px; padding:22px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
-  }
-  .paper h2{
-    margin:4px 0 10px; font-size:26px;
-  }
-  .msg{
-    font-size:18px; margin:10px 0 18px;
-    padding:12px 14px; border-left:4px solid var(--accent);
-    background:linear-gradient(90deg, rgba(108,92,231,.08), transparent 60%);
-    border-radius:12px;
-  }
-  .pretty{
-    font-weight:800; font-size:22px; margin:6px 0 4px; color:var(--accent2);
-    display:flex; align-items:center; gap:8px;
-  }
-  .pretty span.emoji{font-size:22px}
-  form{
-    margin-top:14px; display:grid; gap:12px;
-  }
-  label{ font-weight:700; font-size:14px }
-  input, textarea{
-    width:100%; border:1px solid rgba(0,0,0,.12);
-    border-radius:12px; padding:12px 14px; font-size:16px;
-    background:#fff;
-  }
-  textarea{ min-height:110px; resize:vertical }
-  .actions{
-    display:flex; gap:10px; justify-content:flex-end; margin-top:6px;
-  }
-  button{
-    appearance:none; border:none; border-radius:999px;
-    padding:12px 18px; font-weight:800; letter-spacing:.4px;
-    box-shadow:var(--shadow); cursor:pointer;
-  }
-  .btn-primary{ background:linear-gradient(135deg, var(--accent), #7f69ff); color:#fff }
-  .btn-ghost{ background:#fff }
-  .footer{
-    font-size:12px; opacity:.65; margin-top:6px; text-align:center;
-  }
-  /* confetti */
-  .confetti{
-    position:fixed; inset:0; pointer-events:none; overflow:hidden;
-  }
-  .piece{
-    position:absolute; width:10px; height:16px; opacity:.9;
-    animation:fall linear forwards;
-  }
-  @keyframes fall{
-    to{ transform:translateY(110vh) rotate(720deg); opacity:1 }
-  }
+    h1 {
+      margin-top: 20px;
+      font-size: 26px;
+      text-shadow: 2px 2px 6px black;
+    }
 
-  /* Responsive tweaks */
-  @media (max-width:480px){
-    .invite{height:300px}
-    .seal{width:64px;height:64px}
-    .paper h2{font-size:22px}
-  }
-</style>
+    p {
+      max-width: 600px;
+      margin: auto;
+      padding: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      text-shadow: 1px 1px 3px black;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 10px;
+      border: none;
+      margin-top: 15px;
+      width: 70%;
+      text-align: center;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #ff69b4;
+      color: white;
+      font-weight: bold;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    button:hover {
+      background: #ff1493;
+      transform: scale(1.1);
+    }
+
+    /* stiker iPhone style */
+    .iphone {
+      width: 150px;
+      height: 150px;
+      border-radius: 20px;
+      background: white;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      animation: float 3s infinite ease-in-out;
+    }
+
+    .message {
+      color: black;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0px); }
+    }
+
+    #preview {
+      margin-top: 20px;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 12px;
+      opacity: 0.8;
+      text-shadow: 1px 1px 2px black;
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="headline">Salut ma sœur, je suis <strong>GusOfcXD</strong>, je vais te donner une lettre 💌</div>
-    <div class="ribbon">Undangan Spesial • Tap untuk membuka</div>
+  <h1>✨ Brat Generator ✨</h1>
+  <p><b>Apa itu Brat?</b><br> Brat adalah ekspresi trend lucu + ngeselin yang lagi viral. 
+  Dengan generator ini kamu bisa bikin stiker ala iPhone dengan pesanmu sendiri!</p>
 
-    <div class="invite" id="invite">
-      <div class="card">
-        <div class="flap" id="flap"></div>
-        <div class="seal" aria-hidden="true"></div>
-        <div class="content">
-          <h1 class="title">Undangan Elegan</h1>
-          <p class="subtitle">Sentuh untuk membuka &amp; baca pesannya</p>
-          <span class="hint">Klik / tap kartu ini</span>
-          <div class="ornaments">
-            <span class="dot d1"></span>
-            <span class="dot d2"></span>
-            <span class="dot d3"></span>
-            <span class="dot d4"></span>
-          </div>
-        </div>
-      </div>
-    </div>
+  <input type="text" id="pesan" placeholder="Masukkan pesanmu...">
+  <br>
+  <button onclick="generate()">Buat Sticker</button>
+  <button id="downloadBtn" style="display:none;">Simpan Foto</button>
 
-    <dialog id="letter">
-      <div class="paper">
-        <div class="paper-inner">
-          <h2>Surat untukmu ✨</h2>
-          <div class="msg">“anda cantik🤭🗿”</div>
+  <div id="preview"></div>
 
-          <div class="pretty">anda cantik <span class="emoji">🤭🗿</span></div>
+  <footer>Dibuat oleh <b>GusOfcXD</b> 🕶️</footer>
 
-          <form id="replyForm">
-            <div>
-              <label for="name">Nama anda</label>
-              <input id="name" name="name" placeholder="Tulis nama kamu..." required />
-            </div>
-            <div>
-              <label for="message">Kirim jawaban anda</label>
-              <textarea id="message" name="message" placeholder="Pesan kamu... (mis. terima kasih undangannya!)" required></textarea>
-            </div>
-            <div class="actions">
-              <button type="button" class="btn-ghost" id="closeBtn">Tutup</button>
-              <button type="submit" class="btn-primary">Kirim ke Telegram</button>
-            </div>
-            <div class="footer" id="status">Pesan dikirim ke bot kamu.</div>
-          </form>
-        </div>
-      </div>
-    </dialog>
-
-    <div class="confetti" id="confetti" aria-hidden="true"></div>
-  </div>
-
-<script>
-  // ====== Config Bot Telegram (dari kamu) ======
-  const BOT_TOKEN = "7962301094:AAHeeSbeCEcF8GC5kAwqAWAQqZZ4Zib04Dg";
-  const CHAT_ID   = "7508322436";
-  const API_URL   = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-
-  // ====== UI Behavior ======
-  const invite  = document.getElementById('invite');
-  const flap    = document.getElementById('flap');
-  const letter  = document.getElementById('letter');
-  const closeBtn= document.getElementById('closeBtn');
-  const form    = document.getElementById('replyForm');
-  const status  = document.getElementById('status');
-  const confetti= document.getElementById('confetti');
-
-  let opened = false;
-
-  function openEnvelope(){
-    if(opened) return;
-    opened = true;
-    flap.style.transform = 'rotateX(-160deg)';
-    setTimeout(()=>{
-      letter.showModal();
-      dropConfetti();
-    }, 500);
-  }
-
-  invite.addEventListener('click', openEnvelope);
-  invite.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ openEnvelope(); }});
-  closeBtn.addEventListener('click', ()=> letter.close());
-
-  // ====== Kirim ke Telegram ======
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const name = form.name.value.trim();
-    const msg  = form.message.value.trim();
-    if(!name || !msg){
-      status.textContent = "Lengkapi nama dan pesan ya.";
-      return;
-    }
-    // Format pesan rapi
-    const text = [
-      "💌 *Balasan Undangan*",
-      `👤 *Nama:* ${escapeMarkdown(name)}`,
-      `📝 *Pesan:* ${escapeMarkdown(msg)}`,
-      "",
-      "— dikirim via Surat Undangan GusOfcXD"
-    ].join("\n");
-
-    status.textContent = "Mengirim...";
-    try{
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text,
-          parse_mode: "Markdown"
-        })
-      });
-      if(!res.ok){
-        const t = await res.text();
-        throw new Error(t || 'Gagal kirim');
+  <script>
+    function generate() {
+      const pesan = document.getElementById("pesan").value;
+      if (!pesan) {
+        alert("Masukkan pesan dulu!");
+        return;
       }
-      status.textContent = "Terkirim! ✅ Terima kasih 🙌";
-      form.reset();
-      toast("Terkirim ke Telegram ✅");
-    }catch(err){
-      console.error(err);
-      status.textContent = "Gagal mengirim. Coba lagi.";
-      toast("Gagal kirim. Coba lagi.", true);
+
+      const box = document.createElement("div");
+      box.className = "iphone";
+      box.id = "stikerBox";
+      box.innerHTML = `<div class="message">${pesan}</div>`;
+
+      const preview = document.getElementById("preview");
+      preview.innerHTML = "";
+      preview.appendChild(box);
+
+      setTimeout(() => {
+        html2canvas(box).then(canvas => {
+          const img = document.createElement("img");
+          img.src = canvas.toDataURL("image/png");
+          img.style.maxWidth = "120px";
+          img.style.marginTop = "15px";
+          img.style.borderRadius = "12px";
+          preview.appendChild(img);
+
+          const dlBtn = document.getElementById("downloadBtn");
+          dlBtn.style.display = "inline-block";
+          dlBtn.onclick = () => {
+            const link = document.createElement("a");
+            link.download = "brat_sticker.png";
+            link.href = img.src;
+            link.click();
+          };
+        });
+      }, 400);
     }
-  });
-
-  // Escape Markdown khusus Telegram
-  function escapeMarkdown(s){
-    return s.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, "\\$1");
-  }
-
-  // ====== Confetti sederhana ======
-  function dropConfetti(){
-    const colors = ['#6c5ce7','#a16eff','#ff6b6b','#ffd166','#06d6a0','#118ab2'];
-    const count = 80;
-    for(let i=0;i<count;i++){
-      const piece = document.createElement('div');
-      piece.className='piece';
-      piece.style.left = (Math.random()*100) + 'vw';
-      piece.style.top  = (-10 - Math.random()*20) + 'vh';
-      piece.style.background = colors[Math.floor(Math.random()*colors.length)];
-      piece.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
-      piece.style.animationDuration = (4 + Math.random()*2)+'s';
-      piece.style.animationDelay = (Math.random()*0.3)+'s';
-      piece.style.borderRadius = Math.random()>.5 ? '2px' : '50%';
-      confetti.appendChild(piece);
-      // auto cleanup
-      setTimeout(()=> piece.remove(), 7000);
-    }
-  }
-
-  // ====== Toast mini ======
-  function toast(text, error=false){
-    const el = document.createElement('div');
-    el.textContent = text;
-    el.style.position='fixed';
-    el.style.left='50%';
-    el.style.bottom='28px';
-    el.style.transform='translateX(-50%)';
-    el.style.background= error ? '#ff6b6b' : '#2ecc71';
-    el.style.color='#fff';
-    el.style.padding='10px 14px';
-    el.style.borderRadius='999px';
-    el.style.boxShadow='0 10px 20px rgba(0,0,0,.15)';
-    el.style.fontWeight='800';
-    el.style.zIndex='9999';
-    document.body.appendChild(el);
-    setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .5s'; }, 2000);
-    setTimeout(()=> el.remove(), 2600);
-  }
-
-  // Aksesibilitas: fokus bisa ke kartu
-  invite.tabIndex = 0;
-  invite.setAttribute('role','button');
-  invite.setAttribute('aria-label','Buka undangan');
-</script>
+  </script>
 </body>
 </html>
