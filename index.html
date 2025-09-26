@@ -1,156 +1,157 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Brat Generator</title>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pencet Sidik Jari — Interaktif</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background: url('https://h.uguu.se/lMtLExSE.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-    }
+    :root{--bg:#0b1020;--accent:#7df1ff;--accent-2:#ff7df1}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;color:#fff;background:radial-gradient(1200px 800px at 10% 20%,#071025 0%, #060710 30%, var(--bg) 100%);overflow:hidden}
+    .stage{height:100vh;display:grid;place-items:center;position:relative}.center {
+  width:220px;height:220px;border-radius:50%;display:grid;place-items:center;position:relative;z-index:10;
+  background:linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  box-shadow:0 8px 30px rgba(0,0,0,0.7), 0 0 60px rgba(125,241,255,0.06) inset;
+  transition:transform .18s cubic-bezier(.22,.9,.34,1);
+  cursor:pointer;backdrop-filter: blur(6px);
+}
+.center:active{transform:scale(.96)}
+.center svg{width:84%;height:84%;}
 
-    h1 {
-      margin-top: 20px;
-      font-size: 26px;
-      text-shadow: 2px 2px 6px black;
-    }
+.glow {
+  position:absolute;inset: -40px;z-index:8;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 30% 30%, rgba(125,241,255,0.12), transparent 25%), radial-gradient(circle at 70% 70%, rgba(255,125,241,0.06), transparent 25%);
+  animation: breathe 4s ease-in-out infinite;
+  filter:blur(12px);
+}
+@keyframes breathe{0%{transform:scale(.98);opacity:.9}50%{transform:scale(1.06);opacity:1}100%{transform:scale(.98);opacity:.9}}
 
-    p {
-      max-width: 600px;
-      margin: auto;
-      padding: 10px;
-      font-size: 14px;
-      line-height: 1.5;
-      text-shadow: 1px 1px 3px black;
-    }
+.orbit{position:absolute;inset:0;z-index:5;pointer-events:none}
+.orbiter{position:absolute;left:50%;top:50%;transform-origin:-260px 0; width:120px;height:120px;margin:-60px 0;opacity:0.98}
+.orbiter img{width:100%;height:100%;border-radius:16px;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,0.7)}
+.orbit .one{transform-origin:-300px 0;animation:spin1 18s linear infinite}
+.orbit .two{transform-origin:-360px 0;animation:spin2 24s linear infinite}
+.orbit .three{transform-origin:-220px 0;animation:spin3 14s linear infinite}
+@keyframes spin1{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes spin2{0%{transform:rotate(360deg)}100%{transform:rotate(0deg)}}
+@keyframes spin3{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}
 
-    input {
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 10px;
-      border: none;
-      margin-top: 15px;
-      width: 70%;
-      text-align: center;
-    }
+.spawner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.spider{position:absolute;width:36px;height:36px;border-radius:6px;overflow:hidden;will-change:transform,opacity;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+.bubble{position:absolute;padding:8px 12px;background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));border-radius:999px;border:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(4px);font-weight:600}
 
-    button {
-      margin: 10px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      background: #ff69b4;
-      color: white;
-      font-weight: bold;
-      transition: transform 0.2s, background 0.3s;
-    }
+.hint{position:fixed;left:18px;bottom:18px;font-size:13px;color:rgba(255,255,255,0.65)}
 
-    button:hover {
-      background: #ff1493;
-      transform: scale(1.1);
-    }
+@media (max-width:480px){.center{width:160px;height:160px}.orbit .orbiter{width:86px;height:86px}}
 
-    /* stiker iPhone style */
-    .iphone {
-      width: 150px;
-      height: 150px;
-      border-radius: 20px;
-      background: white;
-      margin: 20px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      animation: float 3s infinite ease-in-out;
-    }
-
-    .message {
-      color: black;
-      font-size: 14px;
-      font-weight: bold;
-      text-align: center;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      max-width: 100%;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
-      100% { transform: translateY(0px); }
-    }
-
-    #preview {
-      margin-top: 20px;
-    }
-
-    footer {
-      margin-top: 30px;
-      font-size: 12px;
-      opacity: 0.8;
-      text-shadow: 1px 1px 2px black;
-    }
   </style>
 </head>
 <body>
-  <h1>✨ Brat Generator ✨</h1>
-  <p><b>Apa itu Brat?</b><br> Brat adalah ekspresi trend lucu + ngeselin yang lagi viral. 
-  Dengan generator ini kamu bisa bikin stiker ala iPhone dengan pesanmu sendiri!</p>
+  <div class="stage">
+    <div class="glow"></div><div class="orbit" aria-hidden="true">
+  <div class="orbiter one"><img src="https://files.catbox.moe/kv6dag.jpg" alt="orb1"></div>
+  <div class="orbiter two"><img src="https://files.catbox.moe/eley1k.jpg" alt="orb2"></div>
+  <div class="orbiter three"><img src="https://files.catbox.moe/9nuu14.jpg" alt="orb3"></div>
+</div>
 
-  <input type="text" id="pesan" placeholder="Masukkan pesanmu...">
-  <br>
-  <button onclick="generate()">Buat Sticker</button>
-  <button id="downloadBtn" style="display:none;">Simpan Foto</button>
+<div class="center" id="finger">
+  <svg viewBox="0 0 512 512" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 128c-70 0-128 58-128 128"/>
+    <path d="M256 96c-88 0-160 72-160 160"/>
+    <path d="M256 64c-106 0-192 86-192 192"/>
+    <path d="M256 32c-123 0-224 101-224 224"/>
+    <path d="M256 192c-35 0-64 29-64 64"/>
+    <path d="M256 160c-53 0-96 43-96 96"/>
+    <path d="M256 224c-17 0-32 15-32 32"/>
+  </svg>
+</div>
 
-  <div id="preview"></div>
+<div class="spawner" id="spawner"></div>
 
-  <footer>Dibuat oleh <b>GusOfcXD</b> 🕶️</footer>
+<div class="hint">Tekan sidik jari → lihat ribuan efek!</div>
 
-  <script>
-    function generate() {
-      const pesan = document.getElementById("pesan").value;
-      if (!pesan) {
-        alert("Masukkan pesan dulu!");
-        return;
+  </div>  <script>
+    (function(){
+      const center = document.getElementById('finger');
+      const spawner = document.getElementById('spawner');
+      const smallImgs = [
+        'https://files.catbox.moe/kv6dag.jpg',
+        'https://files.catbox.moe/eley1k.jpg',
+        'https://files.catbox.moe/9nuu14.jpg'
+      ];
+      const texts = ['jawab apa?', 'Suka kamu', 'cuma kamu'];
+
+      const rand = (a,b)=> Math.random()*(b-a)+a;
+
+      function spawnSpam() {
+        const count = 300;
+        for(let i=0;i<count;i++){
+          const el = document.createElement('div');
+          el.className = 'spider';
+          const size = Math.round(rand(14,40));
+          el.style.width = size+'px';
+          el.style.height = size+'px';
+          const img = document.createElement('img');
+          img.src = smallImgs[Math.floor(Math.random()*smallImgs.length)];
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'cover';
+          el.appendChild(img);
+          const angle = rand(0, Math.PI*2);
+          const radius = rand(10,140);
+          const x = Math.cos(angle)*radius;
+          const y = Math.sin(angle)*radius;
+          el.style.left = (x + 0) + 'px';
+          el.style.top = (y + 0) + 'px';
+          el.style.opacity = 0;
+          spawner.appendChild(el);
+          (function(e,dx,dy){
+            const rotate = rand(-720,720);
+            e.animate([
+              {transform:`translate(${dx}px,${dy}px) scale(.2) rotate(0deg)`, opacity:0},
+              {transform:`translate(${dx*2}px,${dy*2}px) scale(1.05) rotate(${rotate/2}deg)`, opacity:1},
+              {transform:`translate(${dx*3}px,${dy*3}px) scale(.9) rotate(${rotate}deg)`, opacity:0}
+            ],{duration: rand(1200,3000), easing:'cubic-bezier(.2,.9,.2,1)'}).onfinish = ()=> e.remove();
+          })(el, x, y);
+        }
+
+        for(let i=0;i<30;i++){
+          const b = document.createElement('div');
+          b.className='bubble';
+          b.textContent = texts[Math.floor(Math.random()*texts.length)];
+          b.style.left = rand(-160,160)+'px';
+          b.style.top = rand(-120,120)+'px';
+          spawner.appendChild(b);
+          b.animate([
+            {transform:'translateY(0) scale(.9)', opacity:0},
+            {transform:'translateY('+rand(-60,-180)+'px) scale(1)', opacity:1},
+            {transform:'translateY('+rand(-220,-340)+'px) scale(.8)', opacity:0}
+          ],{duration: rand(2000,3500), easing:'cubic-bezier(.2,.9,.2,1)'}).onfinish = ()=> b.remove();
+        }
       }
 
-      const box = document.createElement("div");
-      box.className = "iphone";
-      box.id = "stikerBox";
-      box.innerHTML = `<div class="message">${pesan}</div>`;
+      center.addEventListener('click', ()=>{
+        center.animate([
+          {transform:'scale(1)'},
+          {transform:'scale(1.12)'},
+          {transform:'scale(1)'}
+        ],{duration:380,easing:'cubic-bezier(.2,.9,.2,1)'});
 
-      const preview = document.getElementById("preview");
-      preview.innerHTML = "";
-      preview.appendChild(box);
+        const ring = document.createElement('div');
+        ring.style.position='absolute';
+        ring.style.left='50%';ring.style.top='50%';ring.style.transform='translate(-50%,-50%)';
+        ring.style.width='40px';ring.style.height='40px';ring.style.borderRadius='50%';ring.style.boxShadow='0 0 0 6px rgba(125,241,255,0.18)';ring.style.pointerEvents='none';ring.style.zIndex=20;
+        center.appendChild(ring);
+        ring.animate([
+          {transform:'scale(.6)',opacity:1},
+          {transform:'scale(3.6)',opacity:0}
+        ],{duration:700,easing:'cubic-bezier(.2,.9,.2,1)'}).onfinish=()=> ring.remove();
 
-      setTimeout(() => {
-        html2canvas(box).then(canvas => {
-          const img = document.createElement("img");
-          img.src = canvas.toDataURL("image/png");
-          img.style.maxWidth = "120px";
-          img.style.marginTop = "15px";
-          img.style.borderRadius = "12px";
-          preview.appendChild(img);
+        spawnSpam();
+      });
 
-          const dlBtn = document.getElementById("downloadBtn");
-          dlBtn.style.display = "inline-block";
-          dlBtn.onclick = () => {
-            const link = document.createElement("a");
-            link.download = "brat_sticker.png";
-            link.href = img.src;
-            link.click();
-          };
-        });
-      }, 400);
-    }
-  </script>
-</body>
-</html>
+      center.setAttribute('tabindex','0');
+      center.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter' || ev.key===' ') { ev.preventDefault(); center.click(); } });
+    })();
+  </script></body>
+      </html>
